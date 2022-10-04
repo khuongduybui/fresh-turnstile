@@ -5,25 +5,11 @@ export type CfTurnstileProps = JSX.HTMLAttributes<HTMLDivElement> & {
   sitekey: string;
   callback?: string;
 };
-export default function CfTurnstile(
-  {
-    sitekey: sitekey,
-    callback: callback = "",
-    class: extraClass = "",
-    ...props
-  }: CfTurnstileProps,
-) {
+export default function CfTurnstile({ sitekey: sitekey, callback: callback = "", class: extraClass = "", ...props }: CfTurnstileProps) {
   const commonClassNames = [
     "cf-turnstile",
   ];
-  const classNames = commonClassNames.concat(extraClass);
+  const classNames = commonClassNames.concat([extraClass]);
 
-  return (
-    <div
-      {...props}
-      class={classNames.join(" ")}
-      data-sitekey={sitekey}
-      data-callback={callback}
-    />
-  );
+  return <div {...props} class={classNames.join(" ")} data-sitekey={sitekey} data-callback={callback} />;
 }
