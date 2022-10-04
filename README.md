@@ -51,7 +51,24 @@ Add `<CfTurnstile sitekey="..." />` inside your form.
 
 ## Server-side Validation
 
-@TODO
+`fresh-turnstile` provides a default POST handler for easy server-side form validations.
+
+You may use it like this in your route:
+
+```tsx
+import { CfTurnstileValidationResult, generatePostHandler } from "$turnstile/handlers/CfTurnstileValidation.ts";
+
+import Page from "$flowbite/components/Page.tsx";
+
+export const handler = { POST: generatePostHandler(cf_turnstile_secret_key) };
+
+export default function CfTurnstileValidation({ data }: PageProps<CfTurnstileValidationResult | null>) {
+  // 3 scenarios can occur here:
+  // 1. data is null => the form was not submitted correctly, or the secret key was not provided.
+  // 2. data.success is false => the form was submitted correctly, but validation failed. data["error-codes"] should be a list of error codes (as strings).
+  // 3. data.success is true => the form was submitted correctly and validated successfully. data.challenge_ts and data.hostname should be available for inspection.
+}
+```
 
 ## A note about versioning
 
