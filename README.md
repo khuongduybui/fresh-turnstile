@@ -12,7 +12,7 @@ Add Turnstile to your `import_map.json`.
 ```json
 {
   "imports": {
-    "$turnstile/": "https://raw.githubusercontent.com/khuongduybui/fresh-turnstile/0.0.1-0/"
+    "$turnstile/": "https://raw.githubusercontent.com/khuongduybui/fresh-turnstile/0.0.3-0/"
   }
 }
 ```
@@ -42,11 +42,12 @@ await start(manifest, {
 #### Protecting a form
 
 Add `<CfTurnstile sitekey="..." />` inside your form. A hidden input named `cf-turnstile-response` will be added to your form with the token value once a
-response is received from Turnstile. See the instructions in the server-side validation section further below for easy server-side handling.
+response is received from Turnstile. See the instructions in the [server-side validation](#server-side-validation) section further below for easy server-side
+handling.
 
 #### Disable implicit rendering
 
-Add the `disableImplicitRendering` option to your plugin declaration:
+Add the `disableImplicitRendering` option to your plugin declaration. (See the [installation](#installation) section above again for more information.)
 
 ```ts
 await start(manifest, {
@@ -58,9 +59,9 @@ await start(manifest, {
 });
 ```
 
-See the installation section above again for more information.
+Once you have disabled implicit rendering, see the next section to [explicitly render](#explicit-rendering) your Turnstile widgets.
 
-### Global access
+### Explicit Rendering
 
 You can get the `turnstile` global object from inside a `useEffect` hook like this:
 
@@ -85,10 +86,8 @@ useTurnstileEffect((turnstile) => {
 });
 ```
 
-### Explicit Rendering
-
-Once you have got ahold of the `turnstile` object within an effect hook (see the previous section), you can now call `turnstile.render(...)` similar to how it
-is shown in [official docs](https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#explicitly-render-the-turnstile-widget).
+Once you have got ahold of the `turnstile` object within an effect hook, you can now call `turnstile.render(...)` similar to how it is shown in
+[official docs](https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#explicitly-render-the-turnstile-widget).
 
 ## Server-side Validation
 
