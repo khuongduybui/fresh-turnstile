@@ -8,7 +8,7 @@ export type TurnstileWindow = Window & typeof globalThis & {
   onloadTurnstileCallback: () => void;
   turnstile: Turnstile;
 };
-export default function main(_state: TurnstilePluginOptions) {
+export default function main({ disableImplicitRendering = false }: TurnstilePluginOptions) {
   if (IS_BROWSER) {
     const injectScript = (source: string, async = false, defer = false) => {
       const script = document.createElement("script");
@@ -23,16 +23,16 @@ export default function main(_state: TurnstilePluginOptions) {
       stylesheet.href = source;
       document.head.appendChild(stylesheet);
     };
+    const scriptUrl = "https://challenges.cloudflare.com/turnstile/v0/api.js?" + [
+      "onload=onloadTurnstileCallback",
+      disableImplicitRendering ? "render=explicit" : "",
+    ].join("&");
     (window as TurnstileWindow).turnstileReady = new Promise((resolve, _) => {
       (window as TurnstileWindow).onloadTurnstileCallback = () => {
         resolve((window as TurnstileWindow).turnstile);
       };
     });
-    injectScript(
-      "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback",
-      true,
-      true,
-    );
+    injectScript(scriptUrl, true, true);
   }
 }
 

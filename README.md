@@ -22,11 +22,13 @@ Consume the Turnstile plugin in your app's `main.ts`.
 ```ts
 import { TurnstilePlugin } from "$turnstile/index.ts";
 
-await start(manifest, { plugins: [
-  ...
-  TurnstilePlugin(),
-  ...
-] });
+await start(manifest, {
+  plugins: [
+    // ...
+    TurnstilePlugin(),
+    // ...
+  ],
+});
 ```
 
 ## Client-side Rendering
@@ -44,7 +46,19 @@ response is received from Turnstile. See the instructions in the server-side val
 
 #### Disable implicit rendering
 
-@TODO
+Add the `disableImplicitRendering` option to your plugin declaration:
+
+```ts
+await start(manifest, {
+  plugins: [
+    // ...
+    TurnstilePlugin({ disableImplicitRendering: true }),
+    // ...
+  ],
+});
+```
+
+See the installation section above again for more information.
 
 ### Global access
 
@@ -90,10 +104,11 @@ import Page from "$flowbite/components/Page.tsx";
 export const handler = { POST: generatePostHandler(cf_turnstile_secret_key) };
 
 export default function CfTurnstileValidation({ data }: PageProps<CfTurnstileValidationResult | null>) {
-  // 3 scenarios can occur here:
-  // 1. data is null => the form was not submitted correctly, or the secret key was not provided.
-  // 2. data.success is false => the form was submitted correctly, but validation failed. data["error-codes"] should be a list of error codes (as strings).
-  // 3. data.success is true => the form was submitted correctly and validated successfully. data.challenge_ts and data.hostname should be available for inspection.
+  /* 3 scenarios can occur here:
+   * 1. data is null => the form was not submitted correctly, or the secret key was not provided.
+   * 2. data.success is false => the form was submitted correctly, but validation failed. data["error-codes"] should be a list of error codes (as strings).
+   * 3. data.success is true => the form was submitted correctly and validated successfully. data.challenge_ts and data.hostname should be available for inspection.
+   */
 }
 ```
 
