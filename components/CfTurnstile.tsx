@@ -1,10 +1,8 @@
 import { JSX } from "preact";
 
-export type CfTurnstileProps = JSX.HTMLAttributes<HTMLDivElement> & {
-  // https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
-  sitekey: string;
-  callback?: string;
-};
+import { TurnstileOptions } from "../plugin.ts";
+
+export type CfTurnstileProps = JSX.HTMLAttributes<HTMLDivElement> & TurnstileOptions;
 export default function CfTurnstile({ sitekey: sitekey, callback: callback = "", class: extraClass = "", ...props }: CfTurnstileProps) {
   const commonClassNames = [
     "cf-turnstile",

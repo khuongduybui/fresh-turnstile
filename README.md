@@ -1,20 +1,24 @@
 # fresh-turnstile
-[Cloudflare Turnstile](https://www.cloudflare.com/lp/turnstile/) [plugin](https://fresh.deno.dev/docs/concepts/plugins) for [Deno Fresh](https://fresh.deno.dev/).
+
+[Cloudflare Turnstile](https://www.cloudflare.com/lp/turnstile/) [plugin](https://fresh.deno.dev/docs/concepts/plugins) for
+[Deno Fresh](https://fresh.deno.dev/).
 
 ## Installation
 
 First of all, create [your fresh app](https://fresh.deno.dev/docs/getting-started/create-a-project).
 
 Add Turnstile to your `import_map.json`.
+
 ```json
 {
   "imports": {
-    "$turnstile/": "https://raw.githubusercontent.com/khuongduybui/fresh-turnstile/0.0.1-0/",
+    "$turnstile/": "https://raw.githubusercontent.com/khuongduybui/fresh-turnstile/0.0.1-0/"
   }
 }
 ```
 
 Consume the Turnstile plugin in your app's `main.ts`.
+
 ```ts
 import { TurnstilePlugin } from "$turnstile/index.ts";
 
@@ -35,19 +39,42 @@ await start(manifest, { plugins: [
 
 #### Protecting a form
 
-Add `<CfTurnstile sitekey="..." />` inside your form.
+Add `<CfTurnstile sitekey="..." />` inside your form. A hidden input named `cf-turnstile-response` will be added to your form with the token value once a
+response is received from Turnstile. See the instructions in the server-side validation section further below for easy server-side handling.
 
 #### Disable implicit rendering
 
 @TODO
 
-### Explicit Rendering
-
-@TODO
-
 ### Global access
 
-@TODO
+You can get the `turnstile` global object from inside a `useEffect` hook like this:
+
+```tsx
+import { useEffect } from "preact/hooks";
+import { getTurnstileAsync } from "$turnstile/plugin.ts";
+//...
+useEffect(() => {
+  getTurnstileAsync().then((turnstile) => {
+    // console.log(turnstile);
+  });
+});
+```
+
+Or you can directly use the `useTurnstileEffect` hook:
+
+```tsx
+import { useTurnstileEffect } from "$turnstile/plugin.ts";
+// ...
+useTurnstileEffect((turnstile) => {
+  // console.log(turnstile);
+});
+```
+
+### Explicit Rendering
+
+Once you have got ahold of the `turnstile` object within an effect hook (see the previous section), you can now call `turnstile.render(...)` similar to how it
+is shown in [official docs](https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#explicitly-render-the-turnstile-widget).
 
 ## Server-side Validation
 
@@ -72,9 +99,8 @@ export default function CfTurnstileValidation({ data }: PageProps<CfTurnstileVal
 
 ## A note about versioning
 
-For now, the versions are `a.b.c-x.y.z` where `a.b.c` is the plugin version and `x.y.z` is the supported Turnstile API version.
-For example, `0.0.1-0` is the initial release of plugin, which supports Turnstile API v0.
+For now, the versions are `a.b.c-x.y.z` where `a.b.c` is the plugin version and `x.y.z` is the supported Turnstile API version. For example, `0.0.1-0` is the
+initial release of plugin, which supports Turnstile API v0.
 
-All tags starting with `0.0.` are **mutable**. Expect breaking changes!
-Starting from `0.1.`, tags will be **immutable**. However, still expect breaking changes.
-Starting from `1.`, semver will kick in and there will be no breaking changes until `2.`.
+All tags starting with `0.0.` are **mutable**. Expect breaking changes! Starting from `0.1.`, tags will be **immutable**. However, still expect breaking
+changes. Starting from `1.`, semver will kick in and there will be no breaking changes until `2.`.
