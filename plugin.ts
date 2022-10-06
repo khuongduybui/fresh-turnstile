@@ -44,7 +44,13 @@ export async function getTurnstileAsync() {
 export interface TurnstileOptions {
   // https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
   sitekey: string;
-  callback?: string;
+  callback?: (token: string) => void;
+  expiredCallback?: (token: string) => void;
+  errorCallback?: (token: string) => void;
+  action?: string;
+  cData?: Record<string, unknown>;
+  theme?: string;
+  tabIndex?: number;
 }
 export interface Turnstile {
   render: (widgetId: string, options: TurnstileOptions) => void;

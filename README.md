@@ -35,15 +35,35 @@ await start(manifest, {
 
 ### Implicit Rendering
 
-#### Protecting a page
-
-@TODO
-
 #### Protecting a form
 
 Add `<CfTurnstile sitekey="..." />` inside your form. A hidden input named `cf-turnstile-response` will be added to your form with the token value once a
 response is received from Turnstile. See the instructions in the [server-side validation](#server-side-validation) section further below for easy server-side
 handling.
+
+Please note that if you use AJAX / fetch to submit the form, you will need to call `getTurnstileAsync()` to get access to the `turnstile` object and then
+invokes `turnstile.reset(widgetId)` to get a fresh token. See the section on [explicit rendering](#explicit-rendering) below for more instructions on how to get
+access to the `turnstile` object. The `id` attribute you provide to `<CfTurnstile />` gets passthrough directly to the widget, so you can use that ID as
+`widgetId` in `turnstile.getResponse(widgetId)` and `turnstile.reset(widgetId)`.
+
+#### Protecting a page
+
+You can add the `callback`, `errorCallback`, and `expiredCallback` props on `<CfTurnstile />` and dynamically handle these events.
+
+The following code sample displays the response token on the page when it's received from Turnstile.
+
+```tsx
+import { useSignal } from "@preact/signals";
+// ...
+const response = useSignal("Waiting for validation...");
+// ...
+<CfTurnstile sitekey={sitekey} {...props} callback={(token) => response.value = token} />
+<pre>{response}</pre>
+```
+
+**Note**: for implicit rendering, the [official docs](https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations) describe
+`data-callback`, `data-error-callback`, and `data-expired-callback` as strings (function names) that get invoked later. However, this plugin makes uses of
+`useId` and `useEffect` hooks to allow you to provide the callable props directly to `callback`, `errorCallback`, and `expiredCallback`.
 
 #### Disable implicit rendering
 
