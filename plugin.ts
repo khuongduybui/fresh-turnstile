@@ -8,32 +8,33 @@ export type TurnstileWindow = Window & typeof globalThis & {
   onloadTurnstileCallback: () => void;
   turnstile: Turnstile;
 };
+
+export function injectScript(source: string, async = false, defer = false) {
+  const script = document.createElement("script");
+  script.src = source;
+  script.async = async;
+  script.defer = defer;
+  document.head.appendChild(script);
+}
+
+export function injectStylesheet(source: string) {
+  const stylesheet = document.createElement("link");
+  stylesheet.rel = "stylesheet";
+  stylesheet.href = source;
+  document.head.appendChild(stylesheet);
+}
+
 export default function main({ disableImplicitRendering = false }: TurnstilePluginOptions) {
-  if (IS_BROWSER) {
-    const injectScript = (source: string, async = false, defer = false) => {
-      const script = document.createElement("script");
-      script.src = source;
-      script.async = async;
-      script.defer = defer;
-      document.head.appendChild(script);
+  const scriptUrl = "https://challenges.cloudflare.com/turnstile/v0/api.js?" + [
+    "onload=onloadTurnstileCallback",
+    disableImplicitRendering ? "render=explicit" : "",
+  ].join("&");
+  (window as TurnstileWindow).turnstileReady = new Promise((resolve, _) => {
+    (window as TurnstileWindow).onloadTurnstileCallback = () => {
+      resolve((window as TurnstileWindow).turnstile);
     };
-    const _injectStylesheet = (source: string) => {
-      const stylesheet = document.createElement("link");
-      stylesheet.rel = "stylesheet";
-      stylesheet.href = source;
-      document.head.appendChild(stylesheet);
-    };
-    const scriptUrl = "https://challenges.cloudflare.com/turnstile/v0/api.js?" + [
-      "onload=onloadTurnstileCallback",
-      disableImplicitRendering ? "render=explicit" : "",
-    ].join("&");
-    (window as TurnstileWindow).turnstileReady = new Promise((resolve, _) => {
-      (window as TurnstileWindow).onloadTurnstileCallback = () => {
-        resolve((window as TurnstileWindow).turnstile);
-      };
-    });
-    injectScript(scriptUrl, true, true);
-  }
+  });
+  injectScript(scriptUrl, true, true);
 }
 
 export async function getTurnstileAsync() {
@@ -45,8 +46,8 @@ export interface TurnstileOptions {
   // https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
   sitekey: string;
   callback?: (token: string) => void;
-  expiredCallback?: (token: string) => void;
-  errorCallback?: (token: string) => void;
+  expiredCallback?: () => void;
+  errorCallback?: () => void;
   action?: string;
   cData?: Record<string, unknown>;
   theme?: string;

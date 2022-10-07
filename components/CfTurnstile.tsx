@@ -15,14 +15,20 @@ export default function CfTurnstile(
   const callbackId = useId();
   const expiredCallbackId = useId();
   const errorCallbackId = useId();
+
+  type MyWindow = Window & typeof globalThis & {
+    [key: string]: ((token: string) => void) | (() => void);
+  };
+  const myWindow = window as MyWindow;
+
   useEffect(() => {
-    window[callbackId] = callback;
-    window[expiredCallbackId] = expiredCallback;
-    window[errorCallbackId] = errorCallback;
+    if (callback) myWindow[callbackId] = callback;
+    if (expiredCallback) myWindow[expiredCallbackId] = expiredCallback;
+    if (errorCallback) myWindow[errorCallbackId] = errorCallback;
     return () => {
-      delete window[callbackId];
-      delete window[expiredCallbackId];
-      delete window[errorCallbackId];
+      if (callback) delete myWindow[callbackId];
+      if (expiredCallback) delete myWindow[expiredCallbackId];
+      if (errorCallback) delete myWindow[errorCallbackId];
     };
   });
 

@@ -8,7 +8,7 @@ export type TurnstilePluginOptions = {
 export function TurnstilePlugin(options?: TurnstilePluginOptions): Plugin {
   return {
     name: "turnstile",
-    entrypoints: { "main": "$turnstile/plugin.ts" },
+    entrypoints: { "main": import.meta.resolve("./plugin.ts") },
     render(ctx: PluginRenderContext) {
       ctx.render();
       return {
