@@ -12,7 +12,7 @@ Add Turnstile to your `import_map.json`.
 ```json
 {
   "imports": {
-    "$turnstile/": "https://deno.land/x/fresh_turnstile@1.0.0-0/"
+    "$turnstile/": "https://deno.land/x/fresh_turnstile@1.0.1-0/"
   }
 }
 ```
