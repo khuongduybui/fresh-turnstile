@@ -10,7 +10,7 @@ export default function CfTurnstile(
   const commonClassNames = [
     "cf-turnstile",
   ];
-  const classNames = commonClassNames.concat([extraClass]);
+  const classNames = [...commonClassNames, extraClass];
 
   const callbackId = useId();
   const expiredCallbackId = useId();
